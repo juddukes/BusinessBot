@@ -1,39 +1,47 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Business Consulting AI</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-  <h1>💼 AI Business Strategy Assistant</h1>
+<html lang="en">
 
-  <div>
-    <textarea id="userPrompt" rows="4" cols="60" placeholder="Describe your business idea..."></textarea><br>
-    <button onclick="askAI()">Ask AI</button>
-    <div id="responseBox" class="response"></div>
-  </div>
+<head>
+  <meta charset="UTF-8">
+  <title>BusinessBot</title>
+  <script defer src="/static/app.js"></script>
+</head>
+
+<body>
+  <h2>BusinessBot – Entrepreneur Assistant</h2>
+
+  <textarea id="userPrompt" placeholder="Describe your business idea..."></textarea>
+  <select id="stage">
+    <option value="">Select Business Stage</option>
+    <option value="Idea">Idea</option>
+    <option value="Startup">Startup</option>
+    <option value="Scaling">Scaling</option>
+  </select>
+  <input id="industry" placeholder="Industry (e.g., tech, food, finance)">
+  <input id="budget" placeholder="Estimated Budget (e.g., 10000)">
+  <button onclick="askAI()">Ask AI</button>
+  <button id="exportBtn">Export to PDF</button>
+
+  <pre id="responseBox" style="white-space: pre-wrap; background: #f9f9f9; padding: 10px; margin-top: 10px;"></pre>
 
   <hr>
 
-  <h2>🔍 Company Database Search</h2>
-
-  <input id="companySearch" placeholder="Search companies..." />
-
-  <select id="statusFilter">
-    <option value="">All Statuses</option>
-    <option value="active">Active</option>
-    <option value="inactive">Inactive</option>
-  </select>
-
+  <input id="companySearch" type="text" placeholder="Search by company name..." />
   <select id="jurisdictionFilter">
     <option value="">All Jurisdictions</option>
-    <option value="us">US</option>
+    <option value="us">United States</option>
+    <option value="gb">United Kingdom</option>
     <option value="ca">Canada</option>
+    <option value="au">Australia</option>
+    <option value="de">Germany</option>
   </select>
+  <button onclick="searchCompanies()">Search</button>
 
-  <div id="searchResults" style="margin-top: 1rem;"></div>
+  <div id="searchResults"></div>
+
 
   <script src="/static/app.js"></script>
+
 </body>
+
 </html>

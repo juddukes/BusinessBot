@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from openai import OpenAI
 import os
-import sqlite3
 from dotenv import load_dotenv
 from cache import init_cache, get_cached_response, cache_response
+from io import BytesIO
+from fpdf import FPDF
+import requests
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -11,13 +13,20 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 ai_routes = Blueprint("ai", __name__)
 init_cache()
 
+
 @ai_routes.route("/api/ask", methods=["POST"])
 def ask():
     data = request.get_json()
     user_prompt = data.get("prompt", "")
     session_id = data.get("session_id", None)
+    stage = data.get("stage", "")
+    industry = data.get("industry", "")
+    budget = data.get("budget", "")
 
-    full_prompt = f"""You are an AI business consultant. A user has this idea: "{user_prompt}".
+    full_prompt = f"""You are an AI business consultant. A user has this idea: \"{user_prompt}\".
+Business Stage: {stage}
+Industry: {industry}
+Budget: ${budget}
 Give a business strategy including:
 1. Value Proposition
 2. Market Analysis
@@ -46,30 +55,58 @@ Give a business strategy including:
 
 @ai_routes.route("/api/search", methods=["GET"])
 def search_companies():
-    keyword = request.args.get("q", "").lower()
-    status = request.args.get("status", "").lower()
-    jurisdiction = request.args.get("jurisdiction", "").lower()
+    query = request.args.get("q", "").strip()
+    jurisdiction = request.args.get("jurisdiction", "").strip().lower()
 
-    conn = sqlite3.connect("datasets/companies.db")
-    c = conn.cursor()
+    if not query:
+        return jsonify({"error": "Missing query"}), 400
 
-    query = """
-        SELECT name, industry, status, jurisdiction FROM companies
-        WHERE (LOWER(name) LIKE ? OR LOWER(industry) LIKE ?)
-    """
-    params = [f"%{keyword}%", f"%{keyword}%"]
-
-    if status:
-        query += " AND LOWER(status) = ?"
-        params.append(status)
+    # OpenCorporates API endpoint
+    base_url = "https://api.opencorporates.com/v0.4/companies/search"
+    params = {
+        "q": query,
+        "per_page": 10
+    }
 
     if jurisdiction:
-        query += " AND LOWER(jurisdiction) = ?"
-        params.append(jurisdiction)
+        params["jurisdiction_code"] = jurisdiction
 
-    query += " LIMIT 20"
+    try:
+        res = requests.get(base_url, params=params)
+        res.raise_for_status()
+        results = res.json().get("results", {}).get("companies", [])
 
-    c.execute(query, params)
-    results = [{"name": row[0], "industry": row[1], "status": row[2], "jurisdiction": row[3]} for row in c.fetchall()]
-    conn.close()
-    return jsonify(results)
+        companies = []
+        for item in results:
+            company = item.get("company", {})
+            companies.append({
+                "name": company.get("name"),
+                "jurisdiction": company.get("jurisdiction_code", "").upper(),
+                "status": company.get("current_status", "N/A").capitalize(),
+                "company_number": company.get("company_number"),
+                "incorporation_date": company.get("incorporation_date"),
+                "address": company.get("registered_address_in_full", "N/A"),
+                "summary": f"{company.get('name')} is registered in {company.get('jurisdiction_code', '').upper()} and is currently {company.get('current_status', '').lower()}."
+            })
+
+        return jsonify(companies)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@ai_routes.route("/api/export", methods=["POST"])
+def export_response():
+    content = request.json.get("content", "")
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    for line in content.split("\n"):
+        pdf.multi_cell(0, 10, line)
+
+    pdf_output = BytesIO()
+    pdf.output(pdf_output)
+    pdf_output.seek(0)
+
+    return send_file(pdf_output, mimetype="application/pdf", as_attachment=True, download_name="business_plan.pdf")
