@@ -52,9 +52,6 @@ Give a business strategy including:
 
     return jsonify({"response": response_text})
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 
 @ai_routes.route("/api/export", methods=["POST"])
 def export_response():
