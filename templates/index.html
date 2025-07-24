@@ -1,25 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>{{ project_name }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <title>Business Consulting AI</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
-  <div class="container">
-    <h1>{{ project_name }}</h1>
-    <p>Turn your business idea into a strategy — powered by AI.</p>
-    <textarea id="userPrompt" placeholder="Describe your business idea..."></textarea>
-    <button onclick="askAI()">Submit</button>
-    <div id="responseBox"></div>
-  </div>
-  <hr>
-  <h2>Search Companies</h2>
-  <input type="text" id="searchInput" placeholder="Search..." oninput="searchCompanies()">
-  <ul id="resultsList"></ul>
-  <script src="{{ url_for('static', filename='app.js') }}"></script>
-</body>
+  <h1>💼 AI Business Strategy Assistant</h1>
 
+  <div>
+    <textarea id="userPrompt" rows="4" cols="60" placeholder="Describe your business idea..."></textarea><br>
+    <button onclick="askAI()">Ask AI</button>
+    <div id="responseBox" class="response"></div>
+  </div>
+
+  <hr>
+
+  <h2>🔍 Company Database Search</h2>
+
+  <input id="companySearch" placeholder="Search companies..." />
+
+  <select id="statusFilter">
+    <option value="">All Statuses</option>
+    <option value="active">Active</option>
+    <option value="inactive">Inactive</option>
+  </select>
+
+  <select id="jurisdictionFilter">
+    <option value="">All Jurisdictions</option>
+    <option value="us">US</option>
+    <option value="ca">Canada</option>
+  </select>
+
+  <div id="searchResults" style="margin-top: 1rem;"></div>
+
+  <script src="/static/app.js"></script>
+</body>
 </html>
