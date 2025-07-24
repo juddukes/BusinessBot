@@ -1,0 +1,4 @@
+name,jurisdiction_code,company_number,industry,status
+OpenAI,us_ca,123456789,Technology,Active
+BizTech Solutions,us_tx,987654321,Consulting,Inactive
+EcoCorp,gb,555888999,Environmental,Active
