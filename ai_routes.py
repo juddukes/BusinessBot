@@ -52,45 +52,6 @@ Give a business strategy including:
 
     return jsonify({"response": response_text})
 
-
-@ai_routes.route("/api/search", methods=["GET"])
-def search_companies():
-    query = request.args.get("q", "").strip()
-    jurisdiction = request.args.get("jurisdiction", "").strip().lower()
-
-    if not query:
-        return jsonify({"error": "Missing query"}), 400
-
-    # OpenCorporates API endpoint
-    base_url = "https://api.opencorporates.com/v0.4/companies/search"
-    params = {
-        "q": query,
-        "per_page": 10
-    }
-
-    if jurisdiction:
-        params["jurisdiction_code"] = jurisdiction
-
-    try:
-        res = requests.get(base_url, params=params)
-        res.raise_for_status()
-        results = res.json().get("results", {}).get("companies", [])
-
-        companies = []
-        for item in results:
-            company = item.get("company", {})
-            companies.append({
-                "name": company.get("name"),
-                "jurisdiction": company.get("jurisdiction_code", "").upper(),
-                "status": company.get("current_status", "N/A").capitalize(),
-                "company_number": company.get("company_number"),
-                "incorporation_date": company.get("incorporation_date"),
-                "address": company.get("registered_address_in_full", "N/A"),
-                "summary": f"{company.get('name')} is registered in {company.get('jurisdiction_code', '').upper()} and is currently {company.get('current_status', '').lower()}."
-            })
-
-        return jsonify(companies)
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
