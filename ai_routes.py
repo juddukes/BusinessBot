@@ -1,18 +1,17 @@
 from flask import Blueprint, request, jsonify, send_file
-from openai import OpenAI
+import openai
 import os
+import sqlite3
 from dotenv import load_dotenv
 from cache import init_cache, get_cached_response, cache_response
 from io import BytesIO
 from fpdf import FPDF
-import requests
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # API key stored in .env file
 
 ai_routes = Blueprint("ai", __name__)
 init_cache()
-
 
 @ai_routes.route("/api/ask", methods=["POST"])
 def ask():
@@ -27,7 +26,7 @@ def ask():
 Business Stage: {stage}
 Industry: {industry}
 Budget: ${budget}
-Give a business strategy including:
+Provide a business strategy including:
 1. Value Proposition
 2. Market Analysis
 3. Target Audience
@@ -39,18 +38,20 @@ Give a business strategy including:
     if cached:
         return jsonify({"response": cached})
 
-    chat_response = client.chat.completions.create(
-        model="gpt-4o",
+    response = client.chat.completions.create(
+        model="gpt-4o-mini-2024-07-18",
         messages=[
-            {"role": "system", "content": "You are an AI business consultant."},
+            {"role": "system", "content": "You are an expert business consultant."},
             {"role": "user", "content": full_prompt}
-        ]
+        ],
+        max_tokens=4000,
+        temperature=0.7,
+        top_p=1
     )
 
-    response_text = chat_response.choices[0].message.content
-    cache_response(full_prompt, response_text, session_id=session_id)
-
-    return jsonify({"response": response_text})
+    reply = response.choices[0].message.content.strip()
+    cache_response(full_prompt, reply, session_id=session_id)
+    return jsonify({"response": reply})
 
 
 @ai_routes.route("/api/export", methods=["POST"])
