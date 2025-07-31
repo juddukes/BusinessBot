@@ -1,26 +1,97 @@
+/* Base Layout */
 body {
-  font-family: Arial, sans-serif;
-  padding: 2em;
-  background: #f6f7fb;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+  margin: 0;
+  padding: 0 2rem;
 }
-.container {
+
+h1, h2 {
+  text-align: center;
+  color: #0a4f70;
+}
+
+h2 {
+  margin-bottom: 1rem;
+}
+
+/* Card-style Section Containers */
+.section {
+  background: #fff;
+  padding: 2rem;
+  margin: 2rem auto;
+  border-radius: 12px;
   max-width: 800px;
-  margin: auto;
-  background: white;
-  padding: 2em;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
-textarea {
+
+/* Labels & Inputs */
+.label {
+  display: block;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+textarea,
+input,
+select {
   width: 100%;
-  height: 120px;
-  margin-top: 1em;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+  box-sizing: border-box;
 }
+
+/* Button Styling */
 button {
-  margin-top: 1em;
-  padding: 10px 20px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
-#responseBox {
-  margin-top: 2em;
+
+button:hover {
+  background-color: #005ea2;
+  transform: scale(1.02);
+}
+
+/* Response and Output Boxes */
+#responseBox,
+#checklistBox,
+#benchmarkBox {
+  margin-top: 1rem;
+  background-color: #f0f4f8;
+  padding: 1rem;
+  border-radius: 8px;
+  min-height: 100px;
   white-space: pre-wrap;
+}
+
+/* Checklist items */
+#checklistBox ul {
+  list-style: none;
+  padding: 0;
+}
+
+#checklistBox li {
+  background: #eaf0f6;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+
+#checklistBox input[type="checkbox"] {
+  margin-right: 10px;
 }

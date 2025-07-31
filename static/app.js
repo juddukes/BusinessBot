@@ -43,3 +43,23 @@ function exportPDF() {
       window.URL.revokeObjectURL(url);
     });
 }
+
+async function getChecklist(stage, industry) {
+  const res = await fetch("/api/checklist", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ stage, industry })
+  });
+  const data = await res.json();
+  document.getElementById("checklistBox").innerHTML = `<pre>${data.checklist}</pre>`;
+}
+
+async function benchmarkCompetitor(name, industry) {
+  const res = await fetch("/api/benchmark", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ competitor: name, industry })
+  });
+  const data = await res.json();
+  document.getElementById("responseBox").innerText = data.response;
+}

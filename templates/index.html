@@ -1,32 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>BusinessBot</title>
-  <script defer src="/static/app.js"></script>
+  <meta charset="UTF-8" />
+  <title>Business Consultant AI</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
 </head>
-
 <body>
-  <h2>BusinessBot – Entrepreneur Assistant</h2>
+  <h1>BusinessBot AI Consultant</h1>
 
-  <textarea id="userPrompt" placeholder="Describe your business idea..."></textarea>
-  <select id="stage">
-    <option value="">Select Business Stage</option>
-    <option value="Idea">Idea</option>
-    <option value="Startup">Startup</option>
-    <option value="Scaling">Scaling</option>
-  </select>
-  <input id="industry" placeholder="Industry (e.g., tech, food, finance)">
-  <input id="budget" placeholder="Estimated Budget (e.g., 10000)">
-  <button onclick="askAI()">Ask AI</button>
-  <button id="exportBtn">Export to PDF</button>
+  <!-- Business Idea Prompt Section -->
+  <div class="section">
+    <label class="label">Your Business Idea:</label>
+    <textarea id="userPrompt" rows="4" placeholder="Describe your startup or business idea..."></textarea>
 
-  <pre id="responseBox" style="white-space: pre-wrap; background: #f9f9f9; padding: 10px; margin-top: 10px;"></pre>
+    <label class="label">Business Stage:</label>
+    <select id="stage">
+      <option value="Idea">Idea</option>
+      <option value="Prototype">Prototype</option>
+      <option value="Early Stage">Early Stage</option>
+      <option value="Growth">Growth</option>
+    </select>
 
+    <label class="label">Industry:</label>
+    <input id="industry" type="text" placeholder="e.g., Fintech, Retail, HealthTech" />
 
-  <script src="/static/app.js"></script>
+    <label class="label">Budget (USD):</label>
+    <input id="budget" type="number" placeholder="e.g., 10000" />
 
+    <button onclick="askAI()">Get Business Strategy & Funding Advice</button>
+  </div>
+
+  <!-- Response Section -->
+  <div class="section">
+    <h2>AI Response</h2>
+    <div id="responseBox">Your response will appear here...</div>
+    <button id="exportBtn">Export as PDF</button>
+  </div>
+
+  <!-- Checklist Section -->
+  <div class="section">
+    <h2>Monthly Startup Checklist</h2>
+    <button onclick="getChecklist(document.getElementById('stage').value, document.getElementById('industry').value)">Generate Checklist</button>
+    <div id="checklistBox"></div>
+  </div>
+
+  <!-- Competitor Benchmarking Section -->
+  <div class="section">
+    <h2>Competitor Benchmarking</h2>
+    <input id="competitorName" placeholder="Enter competitor name (e.g., Stripe)" />
+    <button onclick="benchmarkCompetitor(document.getElementById('competitorName').value, document.getElementById('industry').value)">Compare with AI</button>
+    <div id="benchmarkBox"></div>
+  </div>
 </body>
-
 </html>
